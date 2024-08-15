@@ -4,7 +4,7 @@ import { useFetchQuestionnaires } from "@/hooks/questionnaire";
 import AddQuestionnaire from "@/components/questionnaire/AddQuestionnaire";
 
 export default function Questionnaire() {
-  const { questionnaires = [] } = useFetchQuestionnaires();
+  const { questionnaires = [], isLoading } = useFetchQuestionnaires();
 
   return (
     <>
@@ -17,8 +17,13 @@ export default function Questionnaire() {
         </div>
 
         <AddQuestionnaire />
-        <DataTable data={questionnaires} columns={columns} rowAsLink={true} link="/questionnaire" />
-
+        <DataTable
+          data={questionnaires}
+          columns={columns}
+          rowAsLink={true}
+          link="/questionnaire"
+          loading={isLoading}
+        />
       </div>
     </>
   );

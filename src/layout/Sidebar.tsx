@@ -1,7 +1,13 @@
 import { ChartBar, Database, Scroll, SignOut, Users } from "phosphor-react";
-import { NavLink } from "react-router-dom";
-
+import { NavLink, useNavigate } from "react-router-dom";
 const Sidebar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/auth");
+  };
+
   return (
     <>
       <div className="flex justify-between items-center max-md:pr-10 max-md:shadow-md">
@@ -37,10 +43,10 @@ const Sidebar = () => {
 
       <aside
         id="default-sidebar"
-        className="fixed top-0 left-0 md:m-2 md:border md:border-black md:rounded-lg z-40 w-64 h-screen transition-transform -translate-x-full md:translate-x-0"
+        className="fixed top-0 left-0 md:m-2 md:border md:border-gray-200 md:rounded-lg z-40 w-64 h-screen transition-transform -translate-x-full md:translate-x-0"
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 py-4 rounded-lg overflow-y-auto md:roun bg-gray-50 dark:bg-gray-800">
+        <div className="h-full px-3 py-4 rounded-lg overflow-y-auto md:rounded-lg  dark:bg-gray-800">
           {/* Sidebar Header */}
           <div className="text-center py-5 border-b-2 border-gray-300">
             <h1 className="text-3xl font-bold">Mood Quest</h1>
@@ -112,15 +118,15 @@ const Sidebar = () => {
             </li>
 
             <li>
-              <NavLink
-                to="/"
+              <button
+                onClick={handleLogout}
                 className="flex items-center px-2 py-3 text-gray-900 rounded-lg dark:text-white dark:hover:bg-gray-700 group"
               >
                 <SignOut size={18} weight="bold" />
                 <span className="flex-1 ms-3 text-[15px] font-semibold whitespace-nowrap">
                   Sign Out
                 </span>
-              </NavLink>
+              </button>
             </li>
           </ul>
         </div>

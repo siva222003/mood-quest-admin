@@ -6,6 +6,7 @@ import { Question } from "../../data/schema";
 import { DataTableColumnHeader } from "../data-table/data-table-column-header";
 import { DataTableRowActions } from "../questions/question-row-actions";
 import { Badge } from "../ui/badge";
+import { formatDate } from "@/lib/date-formatter";
 
 export const columns: ColumnDef<Question>[] = [
   {
@@ -37,7 +38,8 @@ export const columns: ColumnDef<Question>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Question" />,
     cell: ({ row }) => {
       const questionText = row.getValue("questionText") as string;
-      const updatedQuestionText = questionText.length > 50 ? `${questionText.slice(0, 50)}...` : questionText;
+      const updatedQuestionText =
+        questionText.length > 50 ? `${questionText.slice(0, 50)}...` : questionText;
       return <div className="">{updatedQuestionText}</div>;
     },
     enableSorting: false,
@@ -46,11 +48,11 @@ export const columns: ColumnDef<Question>[] = [
   {
     accessorKey: "createdAt",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
-    cell: ({}) => {
+    cell: ({ row }) => {
+      const date = formatDate(row.getValue("createdAt"));
       return (
         <div className="flex space-x-2">
-          {/* <span className="max-w-[500px] truncate font-medium">{row.getValue("createdAt")}</span> */}
-          <span className="max-w-[500px] truncate">06 Nov, 2023 11:38</span>
+          <span className="max-w-[500px] truncate">{date}</span>
         </div>
       );
     },

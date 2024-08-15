@@ -6,6 +6,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 // import { labels, priorities, statuses } from "../../data/data";
 import { User } from "../../data/schema";
 import { DataTableColumnHeader } from "../data-table/data-table-column-header";
+import { Badge } from "../ui/badge";
+import { formatDate } from "@/lib/date-formatter";
 // import { DataTableRowActions } from "../data-table/data-table-row-actions";
 
 export const columns: ColumnDef<User>[] = [
@@ -35,13 +37,12 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("name")}</div>
+    cell: ({ row }) => <div className="w-[80px]">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "email",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
     cell: ({ row }) => {
-
       return (
         <div className="flex space-x-2">
           {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
@@ -56,10 +57,11 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "createdAt",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
     cell: ({ row }) => {
+      const date = formatDate(row.getValue("createdAt"));
 
       return (
-        <div className="flex w-[100px] items-center">
-          <span>{row.getValue("createdAt")}</span>
+        <div className="flex items-center">
+          <span>{date}</span>
         </div>
       );
     },
@@ -71,16 +73,11 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "role",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Role" />,
     cell: ({ row }) => {
-    //   const priority = priorities.find((priority) => priority.value === row.getValue("role"));
-
-    //   if (!priority) {
-    //     return null;
-    //   }
-
       return (
         <div className="flex items-center">
-          {/* {priority.icon && <priority.icon className="mr-2 h-4 w-4 text-muted-foreground" />} */}
-          <span>{row.getValue("role")}</span>
+          <span>
+            <Badge variant={"secondary"}>{row.getValue("role")}</Badge>
+          </span>
         </div>
       );
     },
@@ -88,8 +85,8 @@ export const columns: ColumnDef<User>[] = [
       return value.includes(row.getValue(id));
     },
   },
-//   {
-//     id: "actions",
-//     cell: ({ row }) => <DataTableRowActions row={row} />,
-//   },
+  //   {
+  //     id: "actions",
+  //     cell: ({ row }) => <DataTableRowActions row={row} />,
+  //   },
 ];

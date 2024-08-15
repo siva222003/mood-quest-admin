@@ -55,3 +55,16 @@ export const questionSchema = z.object({
 });
 
 export type Question = z.infer<typeof questionSchema>;
+
+export const recommendationSchema = z.object({
+  _id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  type: z.string(),
+  tags: z.array(z.string()),
+  url: z.string(),
+  thumbnailUrl: z.string(),
+  createdAt: z.string(),
+});
+
+export type Recommendation = z.infer<typeof recommendationSchema>;

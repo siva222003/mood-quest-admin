@@ -37,6 +37,10 @@ const EditQuestion = forwardRef<HTMLButtonElement, AddSectionProps>(({ question 
   const { toast } = useToast();
 
   const handleAddOption = () => {
+    if (!option) {
+      return;
+    }
+
     const newOption = { text: option };
     setOptions([...options, newOption]);
     setOption("");

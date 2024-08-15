@@ -6,7 +6,7 @@ import AddSection from "@/components/sections/AddSection";
 
 export default function Sections() {
   const { questionnaireId } = useParams();
-  const { sections } = useFetchSections(questionnaireId);
+  const { sections ,isLoading} = useFetchSections(questionnaireId);
 
   return (
     <>
@@ -25,6 +25,7 @@ export default function Sections() {
           columns={columns}
           rowAsLink={true}
           link={`/questionnaire/${questionnaireId}/section`}
+          loading={isLoading}
         />
 
         <Outlet />

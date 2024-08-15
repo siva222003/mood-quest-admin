@@ -1,18 +1,12 @@
-import { columns } from "../components/data-table/columns";
+import { useFetchRecommendations } from "@/hooks/recommendation";
+import { columns } from "../components/recommendations/recommendation-columns";
 import { DataTable } from "../components/data-table/data-table";
-import { tasks } from "../constants/index";
-
-// Simulate a database read for tasks.
-// async function getTasks() {
-//   const res = await fetch("src/data/tasks.json");
-
-//   const data = await res.json();
-
-//   return data;
-// }
+import AddRecommendation from "@/components/recommendations/AddRecommendation";
 
 export default function Recommendations() {
+  const { recommendations = [] ,isLoading} = useFetchRecommendations();
 
+  console.log(recommendations);
   return (
     <>
       <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
@@ -24,7 +18,10 @@ export default function Recommendations() {
             </p>
           </div>
         </div>
-        <DataTable data={tasks} columns={columns} />
+
+        <AddRecommendation />
+
+        <DataTable data={recommendations} columns={columns} loading={isLoading} />
       </div>
     </>
   );

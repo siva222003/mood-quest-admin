@@ -3,7 +3,7 @@ import { DataTable } from "../components/data-table/data-table";
 import { useFetchUsers } from "@/hooks/user/useFetchUsers";
 
 export default function Users() {
-  const { users } = useFetchUsers();
+  const { users ,isLoading} = useFetchUsers();
 
   console.log(users);
 
@@ -18,7 +18,7 @@ export default function Users() {
             </p>
           </div>
         </div>
-        <DataTable data={users ? users : []} columns={columns} />
+        <DataTable data={users ? users : []} columns={columns} loading={isLoading} />
       </div>
     </>
   );

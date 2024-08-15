@@ -49,7 +49,7 @@ const App = () => {
           element={
             <main className="flex max-md:flex-col md:m-2 font-primary">
               <Sidebar />
-              <section className="md:ml-[264px] border border-black rounded-lg flex-1 min-h-screen">
+              <section className="md:ml-[264px]  rounded-lg flex-1 min-h-screen">
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/users" element={<Users />} />

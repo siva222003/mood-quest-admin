@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Section } from "../../data/schema";
 import { DataTableColumnHeader } from "../data-table/data-table-column-header";
 import { DataTableRowActions } from "../sections/section-row-actions";
+import { formatDate } from "@/lib/date-formatter";
 
 export const columns: ColumnDef<Section>[] = [
   {
@@ -41,11 +42,12 @@ export const columns: ColumnDef<Section>[] = [
   {
     accessorKey: "createdAt",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
-    cell: ({ }) => {
+    cell: ({ row }) => {
+      const date = formatDate(row.getValue("createdAt"));
       return (
         <div className="flex space-x-2">
           {/* <span className="max-w-[500px] truncate font-medium">{row.getValue("createdAt")}</span> */}
-          <span className="max-w-[500px] truncate">06 Nov, 2023 11:38</span>
+          <span className="max-w-[500px] truncate">{date}</span>
         </div>
       );
     },

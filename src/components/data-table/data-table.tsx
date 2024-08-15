@@ -24,15 +24,16 @@ import {
 } from "@/components/ui/table";
 
 import { DataTablePagination } from "./data-table-pagination";
-// import { DataTableToolbar } from "./data-table-toolbar";
 import { useNavigate } from "react-router-dom";
 import { Questionnaire, Section } from "@/data/schema";
+import { Icons } from "../ui/icons";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   rowAsLink?: boolean;
   link?: string;
+  loading: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -40,6 +41,7 @@ export function DataTable<TData, TValue>({
   data,
   rowAsLink = false,
   link,
+  loading,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -98,7 +100,13 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {loading ? (
+              <TableRow className="" >
+              <TableCell colSpan={columns.length} className="h-96">
+                <Icons.spinner className="animate-spin h-10 w-10 mx-auto" />
+              </TableCell>
+            </TableRow>
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   onClick={() => handleRowClick(row.original)}
