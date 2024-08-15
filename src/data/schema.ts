@@ -45,3 +45,13 @@ export const sectionSchema = z.object({
 });
 
 export type Section = z.infer<typeof sectionSchema>;
+
+export const questionSchema = z.object({
+  _id: z.string(),
+  questionText: z.string(),
+  type: z.string(),
+  options: z.array(z.object({ text: z.string() })),
+  createdAt: z.string(),
+});
+
+export type Question = z.infer<typeof questionSchema>;

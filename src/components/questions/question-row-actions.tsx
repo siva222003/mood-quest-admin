@@ -1,37 +1,52 @@
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Row } from "@tanstack/react-table"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { Row } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
-import { labels } from "../../data/data"
-import { taskSchema } from "../../data/schema"
+} from "@/components/ui/dropdown-menu";
+import { useRef } from "react";
+import { Question } from "@/data/schema";
+import { useParams } from "react-router-dom";
+import EditQuestion from "./EditQuestion";
+import { useDeleteQuestion } from "@/hooks/question";
 
 interface DataTableRowActionsProps<TData> {
-  row: Row<TData>
+  row: Row<TData>;
 }
 
-export function DataTableRowActions<TData>({
-  row,
-}: DataTableRowActionsProps<TData>) {
-  const task = taskSchema.parse(row.original)
+export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TData>) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const { mutate } = useDeleteQuestion();
+  const { sectionId } = useParams();
+
+  const handleEdit = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    buttonRef.current?.click();
+  };
+
+  const handleDelete = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+
+    const questionId = (row.original as Question)._id;
+
+    mutate({ sectionId, questionId });
+  };
 
   return (
     <DropdownMenu>
+      <div onClick={(e) => e.stopPropagation()}>
+        <EditQuestion ref={buttonRef} question={row.original as Question} />
+      </div>
+
       <DropdownMenuTrigger asChild>
         <Button
+          onClick={(e) => e.stopPropagation()}
           variant="ghost"
           className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
         >
@@ -40,28 +55,10 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={task.label}>
-              {labels.map((label) => (
-                <DropdownMenuRadioItem key={label.value} value={label.value}>
-                  {label.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

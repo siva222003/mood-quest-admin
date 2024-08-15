@@ -9,7 +9,7 @@ export const useFetchUsers = () => {
     isError,
     isSuccess,
   } = useQuery<User[]>({
-    queryKey: ["user"],
+    queryKey: ["users"],
     queryFn: fetchUsers,
     refetchOnMount: false,
     retry: false,

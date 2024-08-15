@@ -39,7 +39,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   rowAsLink = false,
-  // link,
+  link,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
 
   const handleRowClick = (row: TData) => {
     if (rowAsLink) {
-      navigate(`/questionnaire/${(row as Questionnaire | Section)._id}`);
+      navigate(`${link}/${(row as Questionnaire | Section)._id}`);
     }
   };
 

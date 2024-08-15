@@ -5,16 +5,13 @@ export const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}`,
 });
 
-//headers
-// api.interceptors.request.use((config) => {
-//   const { getItem } = useLocalStorage();
-
-//   const token = getItem("accessToken");
-//   if (token && token.token) {
-//     config.headers.auth = `Bearer ${token.token}`;
-//   }
-//   return config;
-// });
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers["auth"] = `Bearer ${token}`;
+  }
+  return config;
+});
 
 //response
 

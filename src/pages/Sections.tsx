@@ -18,9 +18,14 @@ export default function Sections() {
           </div>
         </div>
 
-       {questionnaireId &&  <AddSection questionnaireId={questionnaireId} />}
+        {questionnaireId && <AddSection questionnaireId={questionnaireId} />}
 
-        <DataTable data={sections?.sections ? sections.sections : []} columns={columns} />
+        <DataTable
+          data={sections?.sections ? sections.sections : []}
+          columns={columns}
+          rowAsLink={true}
+          link={`/questionnaire/${questionnaireId}/section`}
+        />
 
         <Outlet />
       </div>
