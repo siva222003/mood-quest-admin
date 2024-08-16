@@ -11,7 +11,7 @@ export const fetchUser = async () => {
   const res = await api.get(`/api/user`);
   const data = res.data;
 
-  return data;
+  return data.data;
 };
 
 export const loginUser = async ({ email, password }: { email: string; password: string }) => {

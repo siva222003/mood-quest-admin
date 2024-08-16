@@ -13,10 +13,11 @@ import { Label } from "@/components/ui/label";
 import { forwardRef, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Badge } from "../ui/badge";
-import { X } from "phosphor-react";
+import { Plus, X } from "phosphor-react";
 import { Recommendation } from "@/data/schema";
 import { useToast } from "../ui/use-toast";
 import { useUpdateRecommendation } from "@/hooks/recommendation";
+import SubmitLoader from "../loader/SubmitLoader";
 
 interface EditRecommendationProps {
   recommendation: Recommendation;
@@ -32,7 +33,7 @@ const EditRecommendation = forwardRef<HTMLButtonElement, EditRecommendationProps
     const [tag, setTag] = useState("");
     const [tags, setTags] = useState<string[]>(recommendation.tags);
 
-    const { mutate } = useUpdateRecommendation();
+    const { mutate, isPending } = useUpdateRecommendation();
 
     const { toast } = useToast();
 
@@ -80,8 +81,23 @@ const EditRecommendation = forwardRef<HTMLButtonElement, EditRecommendationProps
       setTags(tags.filter((_, i) => i !== index));
     };
 
+    const handleClose = () => {
+      setTitle(recommendation.title);
+      setDescription(recommendation.description);
+      setUrl(recommendation.url);
+      setThumbnailUrl(recommendation.thumbnailUrl);
+      setType(recommendation.type);
+      setTags(recommendation.tags);
+    };
+
     return (
-      <Dialog>
+      <Dialog
+        onOpenChange={(open) => {
+          if (!open) {
+            handleClose();
+          }
+        }}
+      >
         <DialogTrigger asChild className="hidden">
           <Button ref={ref} variant="outline">
             Edit Recomendation
@@ -90,9 +106,9 @@ const EditRecommendation = forwardRef<HTMLButtonElement, EditRecommendationProps
 
         <DialogContent className="">
           <DialogHeader>
-            <DialogTitle>Add Recommendation</DialogTitle>
+            <DialogTitle>Edit Recommendation</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
+              Edit the recommendation details below and click save.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4 ">
@@ -171,16 +187,17 @@ const EditRecommendation = forwardRef<HTMLButtonElement, EditRecommendationProps
                 className="col-span-4"
               />
 
-              <Button onClick={handleAddOption}>Add</Button>
+              <div
+                onClick={handleAddOption}
+                className="rounded-full hover:bg-gray-100 cursor-pointer w-fit p-2"
+              >
+                <Plus size={22} />
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4 my-5">
               {tags.map((i, ind) => (
-                <Badge
-                  key={ind}
-                  className="px-2 py-3 gap-2 text-sm justify-evenly"
-                  variant={"outline"}
-                >
+                <Badge key={ind} className="py-3 text-xs justify-evenly" variant={"outline"}>
                   {i}
                   <X onClick={() => handleRemoveOption(ind)} className="cursor-pointer" size={14} />
                 </Badge>
@@ -189,7 +206,7 @@ const EditRecommendation = forwardRef<HTMLButtonElement, EditRecommendationProps
           </div>
           <DialogFooter>
             <Button variant="outline" type="button" onClick={handleSubmit}>
-              Save changes
+              {isPending ? <SubmitLoader /> : "Save"}
             </Button>
           </DialogFooter>
         </DialogContent>

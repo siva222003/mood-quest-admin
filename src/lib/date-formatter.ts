@@ -20,6 +20,5 @@ export const formatDate = (temp: string) => {
   // Combine both date and time
   const finalFormattedDate = `${formattedDate} ${formattedTime}`;
 
-  console.log(finalFormattedDate); // Output: "14 Aug, 2024 12:10"
   return finalFormattedDate;
 };

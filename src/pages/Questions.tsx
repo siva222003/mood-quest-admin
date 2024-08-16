@@ -7,7 +7,7 @@ import AddQuestion from "@/components/questions/AddQuestion";
 export default function Questions() {
   const { sectionId } = useParams();
 
-  const { questions = [] ,isLoading} = useFetchQuestions(sectionId);
+  const { questions = [], isLoading } = useFetchQuestions(sectionId);
 
   return (
     <>
@@ -19,9 +19,13 @@ export default function Questions() {
           </div>
         </div>
 
-        {sectionId && <AddQuestion sectionId={sectionId} />}
-
-        <DataTable data={questions} columns={columns} loading={isLoading} />
+        <DataTable
+          data={questions}
+          columns={columns}
+          loading={isLoading}
+          search="title"
+          addModal={sectionId && <AddQuestion sectionId={sectionId} />}
+        />
 
         <Outlet />
       </div>

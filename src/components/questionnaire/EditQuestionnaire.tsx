@@ -13,19 +13,19 @@ import { Label } from "@/components/ui/label";
 import { Questionnaire } from "@/data/schema";
 import { useUpdateQuestionnaire } from "@/hooks/questionnaire";
 import { forwardRef, useState } from "react";
+import SubmitLoader from "../loader/SubmitLoader";
 
 interface EditQuestionnaireProps {
   questionnaire: Questionnaire;
 }
 
 const EditQuestionnairefor = forwardRef<HTMLButtonElement, EditQuestionnaireProps>((props, ref) => {
-
   const [title, setTitle] = useState(props.questionnaire.title);
 
-  const { mutate } = useUpdateQuestionnaire();
+  const { mutate, isPending } = useUpdateQuestionnaire();
 
   const handleSubmit = () => {
-    mutate({ id: props.questionnaire._id,title });
+    mutate({ id: props.questionnaire._id, title });
   };
 
   return (
@@ -35,16 +35,16 @@ const EditQuestionnairefor = forwardRef<HTMLButtonElement, EditQuestionnaireProp
           Edit Questionnaire
         </Button>
       </DialogTrigger>
-      <DialogContent onSubmit={handleSubmit} className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Questionnaire</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Make changes to your questionnaire here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="title" className="text-right">
+          <div className="grid grid-cols-5 items-center gap-4">
+            <Label htmlFor="title" className="text-center">
               Title
             </Label>
             <Input
@@ -57,7 +57,7 @@ const EditQuestionnairefor = forwardRef<HTMLButtonElement, EditQuestionnaireProp
         </div>
         <DialogFooter>
           <Button variant="outline" type="button" onClick={handleSubmit}>
-            Save changes
+            {isPending ? <SubmitLoader /> : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -10,12 +10,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Badge } from "../ui/badge";
-import { X } from "phosphor-react";
+import { Plus, X } from "phosphor-react";
 import { useToast } from "../ui/use-toast";
 import { useCreateRecommendation } from "@/hooks/recommendation";
+import SubmitLoader from "../loader/SubmitLoader";
 
 export default function AddRecommendation() {
   const [title, setTitle] = useState("");
@@ -28,7 +29,7 @@ export default function AddRecommendation() {
 
   const { toast } = useToast();
 
-  const { mutate } = useCreateRecommendation();
+  const { mutate, isPending } = useCreateRecommendation();
 
   const handleSubmit = () => {
     if (!title || !description || !url || !thumbnailUrl || !type || tags.length === 0) {
@@ -57,17 +58,13 @@ export default function AddRecommendation() {
     };
 
     mutate(recommendation);
-
-    setTitle("");
-    setDescription("");
-    setUrl("");
-    setThumbnailUrl("");
-    setType("");
-    setTag("");
-    setTags([]);
   };
 
   const handleAddOption = () => {
+    if (!tag) {
+      return;
+    }
+
     setTags([...tags, tag]);
     setTag("");
   };
@@ -76,17 +73,27 @@ export default function AddRecommendation() {
     setTags(tags.filter((_, i) => i !== index));
   };
 
+  useEffect(() => {
+    setTitle("");
+    setDescription("");
+    setUrl("");
+    setThumbnailUrl("");
+    setType("");
+    setTag("");
+    setTags([]);
+  }, [isPending]);
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Add Recommendation</Button>
+        <Button className="bg-gray-800 mr-4 h-full border-none">Add Recommendation</Button>
       </DialogTrigger>
 
-      <DialogContent onSubmit={handleSubmit} className="">
+      <DialogContent className="">
         <DialogHeader>
           <DialogTitle>Add Recommendation</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Fill in the fields below to add a new recommendation to the list
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4 ">
@@ -118,7 +125,11 @@ export default function AddRecommendation() {
             <Label className="text-right" htmlFor="framework">
               Type
             </Label>
-            <Select value={type} onValueChange={(e) => setType(e)}>
+            <Select
+              disabled={title === "" || description === ""}
+              value={type}
+              onValueChange={(e) => setType(e)}
+            >
               <SelectTrigger className="col-span-4" id="framework">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -165,16 +176,17 @@ export default function AddRecommendation() {
               className="col-span-4"
             />
 
-            <Button onClick={handleAddOption}>Add</Button>
+            <div
+              onClick={handleAddOption}
+              className="rounded-full hover:bg-gray-100 cursor-pointer w-fit p-2"
+            >
+              <Plus size={22} />
+            </div>
           </div>
 
           <div className="grid grid-cols-3 gap-4 my-5">
             {tags.map((i, ind) => (
-              <Badge
-                key={ind}
-                className="px-2 py-3 gap-2 text-sm justify-evenly"
-                variant={"outline"}
-              >
+              <Badge key={ind} className="py-3 text-xs  justify-evenly" variant={"outline"}>
                 {i}
                 <X onClick={() => handleRemoveOption(ind)} className="cursor-pointer" size={14} />
               </Badge>
@@ -182,8 +194,8 @@ export default function AddRecommendation() {
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" type="button" onClick={handleSubmit}>
-            Save changes
+          <Button variant="default" type="button" onClick={handleSubmit}>
+            {isPending ? <SubmitLoader /> : "Add"}
           </Button>
         </DialogFooter>
       </DialogContent>

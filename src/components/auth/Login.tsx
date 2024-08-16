@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,12 +8,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "../ui/use-toast";
 import { loginUser } from "@/api/user";
 import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
+import SubmitLoader from "../loader/SubmitLoader";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
+
+  const navigate = useNavigate();
 
   const client = useQueryClient();
 
@@ -33,6 +36,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       localStorage.setItem("token", data);
 
       client.invalidateQueries({ queryKey: ["user"] });
+
+      navigate("/");
 
       toast({
         title: "Success",
@@ -85,9 +90,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             />
           </div>
 
-          <Button disabled={isPending}>
-            {isPending ? <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> : "Submit"}
-          </Button>
+          <Button disabled={isPending}>{isPending ? <SubmitLoader /> : "Submit"}</Button>
         </div>
       </form>
       {/* <div className="relative">

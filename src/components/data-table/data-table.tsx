@@ -27,6 +27,7 @@ import { DataTablePagination } from "./data-table-pagination";
 import { useNavigate } from "react-router-dom";
 import { Questionnaire, Section } from "@/data/schema";
 import { Icons } from "../ui/icons";
+import { DataTableToolbar } from "./data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,6 +35,8 @@ interface DataTableProps<TData, TValue> {
   rowAsLink?: boolean;
   link?: string;
   loading: boolean;
+  search: string;
+  addModal?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -42,6 +45,8 @@ export function DataTable<TData, TValue>({
   rowAsLink = false,
   link,
   loading,
+  search,
+  addModal
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -80,7 +85,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      {/* <DataTableToolbar table={table} /> */}
+      <DataTableToolbar table={table} search={search} addModal={addModal} />
 
       <div className="rounded-md border">
         <Table>

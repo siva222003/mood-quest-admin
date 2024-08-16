@@ -35,7 +35,7 @@ export const columns: ColumnDef<Questionnaire>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Title" />,
-    cell: ({ row }) => <div className="w-[200px]">{row.getValue("title")}</div>,
+    cell: ({ row }) => <div>{row.getValue("title")}</div>,
     enableSorting: false,
     enableHiding: false,
   },
@@ -46,7 +46,6 @@ export const columns: ColumnDef<Questionnaire>[] = [
       const date = formatDate(row.getValue("createdAt"));
       return (
         <div className="flex space-x-2">
-          {/* <span className="max-w-[500px] truncate font-medium">{row.getValue("createdAt")}</span> */}
           <span className="max-w-[500px] truncate">{date}</span>
         </div>
       );

@@ -11,33 +11,37 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCreateQuestionnaire } from "@/hooks/questionnaire";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import SubmitLoader from "../loader/SubmitLoader";
 
 export default function DialogDemo() {
   const [title, setTitle] = useState("");
 
-  const { mutate } = useCreateQuestionnaire();
+  const { mutate, isPending } = useCreateQuestionnaire();
 
   const handleSubmit = () => {
     mutate({ title });
-    setTitle("");
   };
+
+  useEffect(() => {
+    if (!isPending && title) {
+      setTitle("");
+    }
+  }, [isPending]);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Add Questionnaire</Button>
+        <Button className="bg-gray-800 mr-4 h-full border-none">Add Questionnaire</Button>
       </DialogTrigger>
-      <DialogContent onSubmit={handleSubmit} className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Questionnaire</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
+          <DialogDescription>Add a new questionnaire to the list.</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="title" className="text-right">
+        <div className="grid py-4">
+          <div className="grid grid-cols-5 items-center gap-4">
+            <Label htmlFor="title" className="text-center">
               Title
             </Label>
             <Input
@@ -47,20 +51,10 @@ export default function DialogDemo() {
               className="col-span-3"
             />
           </div>
-          {/* <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
-          </div> */}
         </div>
         <DialogFooter>
-          <Button variant="outline" type="button" onClick={handleSubmit}>
-            Save changes
+          <Button variant="default" type="button" onClick={handleSubmit}>
+            {isPending ? <SubmitLoader /> : "Add"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,4 +1,5 @@
 import { UserAuthForm } from "@/components/auth/Login";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface LoginProps {
@@ -8,9 +9,11 @@ interface LoginProps {
 export default function Login({ isAuthenticated }: LoginProps) {
   const navigate = useNavigate();
 
-  if (isAuthenticated) {
-    navigate("/");
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated]);
 
   return (
     <>

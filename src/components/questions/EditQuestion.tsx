@@ -13,10 +13,11 @@ import { Label } from "@/components/ui/label";
 import { forwardRef, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Badge } from "../ui/badge";
-import { X } from "phosphor-react";
+import { Plus, X } from "phosphor-react";
 import { useToast } from "../ui/use-toast";
 import { Question } from "@/data/schema";
 import { useUpdateQuestion } from "@/hooks/question";
+import SubmitLoader from "../loader/SubmitLoader";
 
 interface AddSectionProps {
   question: Question;
@@ -24,6 +25,7 @@ interface AddSectionProps {
 
 const EditQuestion = forwardRef<HTMLButtonElement, AddSectionProps>(({ question }, ref) => {
   const [questionText, setQuestionText] = useState(question.questionText);
+
   const [type, setType] = useState(question.type);
 
   const [option, setOption] = useState("");
@@ -32,7 +34,7 @@ const EditQuestion = forwardRef<HTMLButtonElement, AddSectionProps>(({ question 
 
   const isOptions = type === "multiple-choice" || type === "chips";
 
-  const { mutate } = useUpdateQuestion();
+  const { mutate, isPending } = useUpdateQuestion();
 
   const { toast } = useToast();
 
@@ -78,18 +80,32 @@ const EditQuestion = forwardRef<HTMLButtonElement, AddSectionProps>(({ question 
     mutate({ questionId: question._id, question: newQuestion });
   };
 
+  const handleCancel = () => {
+    setQuestionText(question.questionText);
+    setType(question.type);
+    setOptions(question.options);
+
+    setOption("");
+  };
+
   return (
-    <Dialog>
+    <Dialog
+      onOpenChange={(open) => {
+        if (!open) {
+          handleCancel();
+        }
+      }}
+    >
       <DialogTrigger asChild className="hidden">
         <Button ref={ref} variant="outline">
           Edit Question
         </Button>
       </DialogTrigger>
-      <DialogContent onSubmit={handleSubmit} className="sm:max-w-[440px]">
+      <DialogContent onSubmit={handleSubmit} className="max-h-full overflow-auto">
         <DialogHeader>
           <DialogTitle>Edit Question</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Edit the question and options for this section here.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-5 py-4">
@@ -106,10 +122,14 @@ const EditQuestion = forwardRef<HTMLButtonElement, AddSectionProps>(({ question 
             />
           </div>
           <div className="grid grid-cols-6 items-center gap-4">
-            <Label className="text-left" htmlFor="framework">
+            <Label className="text-right" htmlFor="framework">
               Type
             </Label>
-            <Select value={type} onValueChange={(e) => setType(e)}>
+            <Select
+              disabled={questionText.length === 0}
+              value={type}
+              onValueChange={(e) => setType(e)}
+            >
               <SelectTrigger className="col-span-5" id="framework">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -135,23 +155,30 @@ const EditQuestion = forwardRef<HTMLButtonElement, AddSectionProps>(({ question 
                 className="col-span-4"
               />
 
-              <Button onClick={handleAddOption}>Add</Button>
+              <div
+                onClick={handleAddOption}
+                className="rounded-full hover:bg-gray-100 cursor-pointer w-fit p-2"
+              >
+                <Plus size={22} />
+              </div>
             </div>
           ) : null}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          {options.map((i, ind) => (
-            <Badge key={ind} className="px-4 py-3 gap-2 text-sm justify-evenly" variant={"outline"}>
-              {i.text}
-              <X onClick={() => handleRemoveOption(ind)} className="cursor-pointer" size={14} />
-            </Badge>
-          ))}
-        </div>
+        {isOptions && (
+          <div className="grid grid-cols-2 gap-4">
+            {options.map((i, ind) => (
+              <Badge key={ind} className="py-3 text-xs justify-evenly" variant={"outline"}>
+                {i.text}
+                <X onClick={() => handleRemoveOption(ind)} className="cursor-pointer" size={14} />
+              </Badge>
+            ))}
+          </div>
+        )}
 
         <DialogFooter className="mt-6">
           <Button variant="secondary" type="button" onClick={handleSubmit}>
-            Save changes
+            {isPending ? <SubmitLoader /> : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>

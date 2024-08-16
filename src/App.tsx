@@ -31,7 +31,7 @@ const App = () => {
         navigate("/auth");
       }
     }
-  }, [user, isLoading, navigate]);
+  }, [user, isLoading]);
 
   if (isLoading) {
     return <HomeLoader />;
@@ -47,8 +47,8 @@ const App = () => {
         <Route
           path="*"
           element={
-            <main className="flex max-md:flex-col md:m-2 font-primary">
-              <Sidebar />
+            <main className="md:m-2 font-primary">
+              <Sidebar setIsAuthenticated={setIsAuthenticated} user={user} />
               <section className="md:ml-[264px]  rounded-lg flex-1 min-h-screen">
                 <Routes>
                   <Route path="/" element={<Dashboard />} />

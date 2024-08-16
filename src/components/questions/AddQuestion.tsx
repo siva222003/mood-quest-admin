@@ -10,12 +10,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Badge } from "../ui/badge";
-import { X } from "phosphor-react";
+import { Plus, X } from "phosphor-react";
 import { useToast } from "../ui/use-toast";
 import { useCreateQuestion } from "@/hooks/question";
+import SubmitLoader from "../loader/SubmitLoader";
 
 interface AddSectionProps {
   sectionId: string;
@@ -31,11 +32,15 @@ export default function AddSection({ sectionId }: AddSectionProps) {
 
   const isOptions = type === "multiple-choice" || type === "chips";
 
-  const { mutate } = useCreateQuestion();
+  const { mutate, isPending } = useCreateQuestion();
 
   const { toast } = useToast();
 
   const handleAddOption = () => {
+    if (!option) {
+      return;
+    }
+
     const newOption = { text: option };
     setOptions([...options, newOption]);
     setOption("");
@@ -46,9 +51,6 @@ export default function AddSection({ sectionId }: AddSectionProps) {
   };
 
   const handleSubmit = () => {
-    // mutate({ sectionId });
-    // // setName("");
-
     if (!questionText || !type) {
       toast({
         title: "Error",
@@ -74,21 +76,26 @@ export default function AddSection({ sectionId }: AddSectionProps) {
     };
 
     mutate({ sectionId, question });
-    setQuestionText("");
-    setType("");
-    setOptions([]);
   };
+
+  useEffect(() => {
+    if (!isPending && questionText) {
+      setQuestionText("");
+      setType("");
+      setOptions([]);
+    }
+  }, [isPending]);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Add Question</Button>
+        <Button className="bg-gray-800 mr-4 h-full border-none">Add Question</Button>
       </DialogTrigger>
-      <DialogContent onSubmit={handleSubmit} className="sm:max-w-[440px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Question</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Add a new question to this section to gather feedback from your users.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-5 py-4">
@@ -105,10 +112,14 @@ export default function AddSection({ sectionId }: AddSectionProps) {
             />
           </div>
           <div className="grid grid-cols-6 items-center gap-4">
-            <Label className="text-left" htmlFor="framework">
+            <Label className="text-right" htmlFor="framework">
               Type
             </Label>
-            <Select value={type} onValueChange={(e) => setType(e)}>
+            <Select
+              disabled={questionText.length === 0}
+              value={type}
+              onValueChange={(e) => setType(e)}
+            >
               <SelectTrigger className="col-span-5" id="framework">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -134,23 +145,29 @@ export default function AddSection({ sectionId }: AddSectionProps) {
                 className="col-span-4"
               />
 
-              <Button onClick={handleAddOption}>Add</Button>
+              <div
+                onClick={handleAddOption}
+                className="rounded-full hover:bg-gray-100 cursor-pointer w-fit p-2"
+              >
+                <Plus size={22} />
+              </div>
             </div>
           ) : null}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          {options.map((i, ind) => (
-            <Badge key={ind} className="px-4 py-3 gap-2 text-sm justify-evenly" variant={"outline"}>
-              {i.text}
-              <X onClick={() => handleRemoveOption(ind)} className="cursor-pointer" size={14} />
-            </Badge>
-          ))}
+          {isOptions &&
+            options.map((i, ind) => (
+              <Badge key={ind} className="py-3 text-xs justify-evenly" variant={"outline"}>
+                {i.text}
+                <X onClick={() => handleRemoveOption(ind)} className="cursor-pointer" size={14} />
+              </Badge>
+            ))}
         </div>
 
         <DialogFooter className="mt-6">
-          <Button variant="secondary" type="button" onClick={handleSubmit}>
-            Save changes
+          <Button variant="default" type="button" onClick={handleSubmit}>
+            {isPending ? <SubmitLoader /> : "Add"}
           </Button>
         </DialogFooter>
       </DialogContent>

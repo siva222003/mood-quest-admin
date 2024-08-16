@@ -11,7 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCreateSection } from "@/hooks/section";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import SubmitLoader from "../loader/SubmitLoader";
 
 interface AddSectionProps {
   questionnaireId: string;
@@ -20,28 +21,31 @@ interface AddSectionProps {
 export default function AddSection({ questionnaireId }: AddSectionProps) {
   const [name, setName] = useState("");
 
-  const { mutate } = useCreateSection();
+  const { mutate, isPending } = useCreateSection();
 
   const handleSubmit = () => {
     mutate({ questionnaireId, name });
-    setName("");
   };
+
+  useEffect(() => {
+    if (!isPending && name) {
+      setName("");
+    }
+  }, [isPending]);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Add Section</Button>
+        <Button className="bg-gray-800 mr-4 h-full border-none">Add Section</Button>
       </DialogTrigger>
-      <DialogContent onSubmit={handleSubmit} className="sm:max-w-[425px]">
+      <DialogContent className="">
         <DialogHeader>
           <DialogTitle>Add Section</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
+          <DialogDescription>Add a new section to the list.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
+          <div className="grid grid-cols-5 items-center gap-4">
+            <Label htmlFor="name" className="text-center">
               Title
             </Label>
             <Input
@@ -51,20 +55,10 @@ export default function AddSection({ questionnaireId }: AddSectionProps) {
               className="col-span-3"
             />
           </div>
-          {/* <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
-          </div> */}
         </div>
         <DialogFooter>
-          <Button variant="outline" type="button" onClick={handleSubmit}>
-            Save changes
+          <Button variant="default" type="button" onClick={handleSubmit}>
+            {isPending ? <SubmitLoader /> : "Add"}
           </Button>
         </DialogFooter>
       </DialogContent>

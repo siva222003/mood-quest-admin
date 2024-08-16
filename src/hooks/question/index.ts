@@ -11,7 +11,7 @@ export const useFetchQuestions = (sectionId: string | undefined) => {
     isError,
     isSuccess,
   } = useQuery<Question[]>({
-    queryKey: ["questions"],
+    queryKey: ["questions", sectionId],
     queryFn: () => fetchQuestions(sectionId),
     retry: false,
   });
@@ -23,7 +23,7 @@ export const useCreateQuestion = () => {
   const { toast } = useToast();
   const client = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createQuestion,
     onError: (err: AxiosError) => {
       console.error("Error from server:", (err.response?.data as Error).message);
@@ -45,6 +45,7 @@ export const useCreateQuestion = () => {
 
   return {
     mutate,
+    isPending,
   };
 };
 
@@ -52,7 +53,7 @@ export const useUpdateQuestion = () => {
   const { toast } = useToast();
   const client = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: updateQuestion,
     onError: (err: AxiosError) => {
       console.error("Error from server:", (err.response?.data as Error).message);
@@ -74,6 +75,7 @@ export const useUpdateQuestion = () => {
 
   return {
     mutate,
+    isPending,
   };
 };
 

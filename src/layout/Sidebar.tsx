@@ -1,10 +1,29 @@
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { useToast } from "@/components/ui/use-toast";
+import { User } from "@/data/schema";
+import { AvatarFallback } from "@radix-ui/react-avatar";
+import { motion } from "framer-motion";
 import { ChartBar, Database, Scroll, SignOut, Users } from "phosphor-react";
 import { NavLink, useNavigate } from "react-router-dom";
-const Sidebar = () => {
+interface SidebarProps {
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  user: User | undefined;
+}
+
+const Sidebar = ({ setIsAuthenticated, user }: SidebarProps) => {
+  const { toast } = useToast();
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    setIsAuthenticated(false);
+
+    toast({
+      title: "Success",
+      description: "Logged out successfully",
+    });
+
     navigate("/auth");
   };
 
@@ -55,7 +74,10 @@ const Sidebar = () => {
           {/* Sidebar Navigation */}
 
           <ul className="space-y-2 font-medium mt-4">
-            <li>
+            <motion.li
+              whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+              whileTap={{ scale: 0.95 }}
+            >
               <NavLink
                 to="/"
                 className={({ isActive }) =>
@@ -67,9 +89,12 @@ const Sidebar = () => {
                 <ChartBar size={18} weight="bold" />
                 <span className="ms-3 text-[15px] font-semibold ">Dashboard</span>
               </NavLink>
-            </li>
+            </motion.li>
 
-            <li>
+            <motion.li
+              whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+              whileTap={{ scale: 0.95 }}
+            >
               <NavLink
                 to="/users"
                 className={({ isActive }) =>
@@ -83,9 +108,12 @@ const Sidebar = () => {
                   Users
                 </span>
               </NavLink>
-            </li>
+            </motion.li>
 
-            <li>
+            <motion.li
+              whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+              whileTap={{ scale: 0.95 }}
+            >
               <NavLink
                 to="/questionnaire"
                 className={({ isActive }) =>
@@ -99,9 +127,12 @@ const Sidebar = () => {
                   Questionnaire
                 </span>
               </NavLink>
-            </li>
+            </motion.li>
 
-            <li>
+            <motion.li
+              whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+              whileTap={{ scale: 0.95 }}
+            >
               <NavLink
                 to="/recommendations"
                 className={({ isActive }) =>
@@ -115,20 +146,32 @@ const Sidebar = () => {
                   Recommendations
                 </span>
               </NavLink>
-            </li>
+            </motion.li>
 
-            <li>
-              <button
-                onClick={handleLogout}
-                className="flex items-center px-2 py-3 text-gray-900 rounded-lg dark:text-white dark:hover:bg-gray-700 group"
-              >
+            <motion.li
+              onClick={handleLogout}
+              className="cursor-pointer hover:bg-gray-100 rounded-lg"
+              whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <button className="flex items-center px-2 py-3 text-gray-900 rounded-lg dark:text-white dark:hover:bg-gray-700 group">
                 <SignOut size={18} weight="bold" />
                 <span className="flex-1 ms-3 text-[15px] font-semibold whitespace-nowrap">
                   Sign Out
                 </span>
               </button>
-            </li>
+            </motion.li>
           </ul>
+
+          <div className="bg-zinc-100 rounded-lg py-3 items-center mt-56 px-4 gap-4 flex">
+            <Avatar>
+              {/* <AvatarImage src="" /> */}
+              <AvatarFallback className="w-full flex justify-center items-center bg-gray-200">
+                {user?.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <h1 className="text-sm font-bold">{user?.name}</h1>
+          </div>
         </div>
       </aside>
     </>

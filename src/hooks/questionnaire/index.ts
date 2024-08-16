@@ -29,7 +29,7 @@ export const useCreateQuestionnaire = () => {
   const { toast } = useToast();
   const client = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createQuestionnaire,
     onError: (err: AxiosError) => {
       console.error("Error from server:", (err.response?.data as Error).message);
@@ -51,6 +51,7 @@ export const useCreateQuestionnaire = () => {
 
   return {
     mutate,
+    isPending,
   };
 };
 
@@ -58,7 +59,7 @@ export const useUpdateQuestionnaire = () => {
   const { toast } = useToast();
   const client = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: updateQuestionnaire,
     onError: (err: AxiosError) => {
       console.error("Error from server:", (err.response?.data as Error).message);
@@ -80,6 +81,7 @@ export const useUpdateQuestionnaire = () => {
 
   return {
     mutate,
+    isPending,
   };
 };
 

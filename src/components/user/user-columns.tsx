@@ -1,14 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
-
-// import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-
-// import { labels, priorities, statuses } from "../../data/data";
 import { User } from "../../data/schema";
 import { DataTableColumnHeader } from "../data-table/data-table-column-header";
 import { Badge } from "../ui/badge";
 import { formatDate } from "@/lib/date-formatter";
-// import { DataTableRowActions } from "../data-table/data-table-row-actions";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -45,7 +40,6 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
           <span className="max-w-[500px] truncate font-medium">{row.getValue("email")}</span>
         </div>
       );
@@ -85,8 +79,4 @@ export const columns: ColumnDef<User>[] = [
       return value.includes(row.getValue(id));
     },
   },
-  //   {
-  //     id: "actions",
-  //     cell: ({ row }) => <DataTableRowActions row={row} />,
-  //   },
 ];

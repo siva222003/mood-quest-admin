@@ -29,7 +29,7 @@ export const useCreateRecommendation = () => {
   const { toast } = useToast();
   const client = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createRecommendation,
     onError: (err: AxiosError) => {
       console.error("Error from server:", (err.response?.data as Error).message);
@@ -51,6 +51,7 @@ export const useCreateRecommendation = () => {
 
   return {
     mutate,
+    isPending,
   };
 };
 
@@ -58,7 +59,7 @@ export const useUpdateRecommendation = () => {
   const { toast } = useToast();
   const client = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: updateRecommendation,
     onError: (err: AxiosError) => {
       console.error("Error from server:", (err.response?.data as Error).message);
@@ -80,6 +81,7 @@ export const useUpdateRecommendation = () => {
 
   return {
     mutate,
+    isPending,
   };
 };
 

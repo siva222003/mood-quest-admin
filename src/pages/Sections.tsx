@@ -6,7 +6,7 @@ import AddSection from "@/components/sections/AddSection";
 
 export default function Sections() {
   const { questionnaireId } = useParams();
-  const { sections ,isLoading} = useFetchSections(questionnaireId);
+  const { sections, isLoading } = useFetchSections(questionnaireId);
 
   return (
     <>
@@ -14,11 +14,9 @@ export default function Sections() {
         <div className="flex items-center justify-between space-y-2">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">Sections</h2>
-            <p className="text-muted-foreground">Here&apos;s the list of questionnaires!</p>
+            <p className="text-muted-foreground">Here&apos;s the list of sections!</p>
           </div>
         </div>
-
-        {questionnaireId && <AddSection questionnaireId={questionnaireId} />}
 
         <DataTable
           data={sections?.sections ? sections.sections : []}
@@ -26,6 +24,8 @@ export default function Sections() {
           rowAsLink={true}
           link={`/questionnaire/${questionnaireId}/section`}
           loading={isLoading}
+          search="name"
+          addModal={questionnaireId && <AddSection questionnaireId={questionnaireId} />}
         />
 
         <Outlet />

@@ -11,9 +11,10 @@ export const useFetchSections = (questionnaireId: string | undefined) => {
     isError,
     isSuccess,
   } = useQuery<SectionResponse>({
-    queryKey: ["sections"],
+    queryKey: ["sections", questionnaireId],
     queryFn: () => fetchSections(questionnaireId),
     retry: false,
+    refetchOnMount: false,
   });
 
   return { sections, isLoading, isError, isSuccess };
@@ -23,7 +24,7 @@ export const useCreateSection = () => {
   const { toast } = useToast();
   const client = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createSection,
     onError: (err: AxiosError) => {
       console.error("Error from server:", (err.response?.data as Error).message);
@@ -45,6 +46,7 @@ export const useCreateSection = () => {
 
   return {
     mutate,
+    isPending,
   };
 };
 
@@ -52,7 +54,7 @@ export const useUpdateSection = () => {
   const { toast } = useToast();
   const client = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: updateSection,
     onError: (err: AxiosError) => {
       console.error("Error from server:", (err.response?.data as Error).message);
@@ -74,6 +76,7 @@ export const useUpdateSection = () => {
 
   return {
     mutate,
+    isPending,
   };
 };
 

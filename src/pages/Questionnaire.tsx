@@ -15,14 +15,14 @@ export default function Questionnaire() {
             <p className="text-muted-foreground">Here&apos;s the list of questionnaires!</p>
           </div>
         </div>
-
-        <AddQuestionnaire />
         <DataTable
           data={questionnaires}
           columns={columns}
           rowAsLink={true}
           link="/questionnaire"
           loading={isLoading}
+          search="title"
+          addModal={<AddQuestionnaire />}
         />
       </div>
     </>
