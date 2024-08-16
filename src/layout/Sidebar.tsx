@@ -1,4 +1,4 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
 import { User } from "@/data/schema";
 import { AvatarFallback } from "@radix-ui/react-avatar";
