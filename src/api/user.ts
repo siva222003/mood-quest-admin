@@ -15,7 +15,7 @@ export const fetchUser = async () => {
 };
 
 export const loginUser = async ({ email, password }: { email: string; password: string }) => {
-  const res = await api.post("/api/user/login", { email, password });
+  const res = await api.post("/api/user/login", { email, password ,role: "admin"});
   const data = res.data;
   return data.data.token;
 };
